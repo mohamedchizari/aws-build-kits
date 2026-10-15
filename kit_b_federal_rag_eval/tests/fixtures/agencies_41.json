@@ -1,0 +1,170 @@
+{
+ "what": "The 41 distinct agency names and abbreviations (columns agency_name and agency) of the OMB inventory CSV at the pinned commit. Used to test the accepted spellings of an agency for collisions across every agency, not only the ones a question asks about.",
+ "commit": "06c7ebeef5b376524211042bd9673b2a7fefd3e3",
+ "agencies": [
+  [
+   "Commodity Futures Trading Commission",
+   "CFTC"
+  ],
+  [
+   "Department of Agriculture",
+   "USDA"
+  ],
+  [
+   "Department of Commerce",
+   "DOC"
+  ],
+  [
+   "Department of Education",
+   "ED"
+  ],
+  [
+   "Department of Energy",
+   "DOE"
+  ],
+  [
+   "Department of Health and Human Services",
+   "HHS"
+  ],
+  [
+   "Department of Homeland Security",
+   "DHS"
+  ],
+  [
+   "Department of Housing and Urban Development",
+   "HUD"
+  ],
+  [
+   "Department of Justice",
+   "DOJ"
+  ],
+  [
+   "Department of Labor",
+   "DOL"
+  ],
+  [
+   "Department of State",
+   "STATE"
+  ],
+  [
+   "Department of Transportation",
+   "DOT"
+  ],
+  [
+   "Department of Veterans Affairs",
+   "VA"
+  ],
+  [
+   "Department of the Interior",
+   "DOI"
+  ],
+  [
+   "Department of the Treasury",
+   "TREAS"
+  ],
+  [
+   "Election Assistance Commission",
+   "EAC"
+  ],
+  [
+   "Environmental Protection Agency",
+   "EPA"
+  ],
+  [
+   "Farm Credit Administration",
+   "FCA"
+  ],
+  [
+   "Federal Communications Commission",
+   "FCC"
+  ],
+  [
+   "Federal Deposit Insurance Corporation",
+   "FDIC"
+  ],
+  [
+   "Federal Energy Regulatory Commission",
+   "FERC"
+  ],
+  [
+   "Federal Housing Finance Agency",
+   "FHFA"
+  ],
+  [
+   "Federal Reserve Board",
+   "FRB"
+  ],
+  [
+   "Federal Trade Commission",
+   "FTC"
+  ],
+  [
+   "General Services Administration",
+   "GSA"
+  ],
+  [
+   "National Aeronautics and Space Administration",
+   "NASA"
+  ],
+  [
+   "National Archives and Records Administration",
+   "NARA"
+  ],
+  [
+   "National Credit Union Administration",
+   "NCUA"
+  ],
+  [
+   "National Endowment for the Arts",
+   "NEA"
+  ],
+  [
+   "National Indian Gaming Commission",
+   "NIGC"
+  ],
+  [
+   "National Science Foundation",
+   "NSF"
+  ],
+  [
+   "National Transportation Safety Board",
+   "NTSB"
+  ],
+  [
+   "Nuclear Regulatory Commission",
+   "NRC"
+  ],
+  [
+   "Occupational Safety and Health Review Commission",
+   "OSHRC"
+  ],
+  [
+   "Office of Special Counsel",
+   "OSC"
+  ],
+  [
+   "Pension Benefit Guaranty Corporation",
+   "PBGC"
+  ],
+  [
+   "Securities and Exchange Commission",
+   "SEC"
+  ],
+  [
+   "Small Business Administration",
+   "SBA"
+  ],
+  [
+   "Social Security Administration",
+   "SSA"
+  ],
+  [
+   "Surface Transportation Board",
+   "STB"
+  ],
+  [
+   "Tennessee Valley Authority",
+   "TVA"
+  ]
+ ]
+}

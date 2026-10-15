@@ -1,0 +1,7 @@
+# Pinned to versions that exist on PyPI on 2026-10-07.
+# How checked: `pip index versions boto3` and `pip index versions pytest` run that day
+# listed 1.43.108 and 9.1.1 as the newest; both were installed and the tests run on Python 3.13.
+# boto3 1.43.x is needed: the MANAGED knowledge base type and managedSearchConfiguration
+# are in the botocore 1.43.108 service model (the AWS sample repo states "boto3 >= 1.43.0").
+boto3==1.43.108
+pytest==9.1.1

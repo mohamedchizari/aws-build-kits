@@ -1,0 +1,10 @@
+# Written at run time in your own account, or by Python and pytest. Never commit these.
+# .state.json holds the name and limit of the budget budget_alarm.py created and the last four digits of
+# its account (no email, no full account id).
+.state.json
+.state.json.tmp
+.state.json*
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/

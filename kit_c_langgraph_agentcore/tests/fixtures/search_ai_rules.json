@@ -1,0 +1,116 @@
+{
+  "body": {
+    "count": 2,
+    "description": "Documents matching '\"artificial intelligence\"', published from 09/07/2026 to 10/07/2026, and of type Rule",
+    "results": [
+      {
+        "abstract": "NHTSA, on behalf of the U.S. Department of Transportation (DOT), is substantially recalibrating the Corporate Average Fuel Economy (CAFE) program to bring the program into compliance with the law and to remove previous regulatory distortions which have induced manufacturers to make design decisions that have neither aligned with market demand and the needs of American families nor have delivered the consistent improvements in the fuel economy performance of manufacturer fleets, as Congress intended. This recalibration finalizes amendments to fuel economy standards for light-duty vehicles for model years 2022- 2026 and MYs 2027-2031. This final rule also finalizes amendments to compliance aspects of the program, including to vehicle classification and other compliance pathways.",
+        "agencies": [
+          {
+            "id": 492,
+            "json_url": "https://www.federalregister.gov/api/v1/agencies/492",
+            "name": "Transportation Department",
+            "parent_id": null,
+            "raw_name": "DEPARTMENT OF TRANSPORTATION",
+            "slug": "transportation-department",
+            "url": "https://www.federalregister.gov/agencies/transportation-department"
+          },
+          {
+            "id": 345,
+            "json_url": "https://www.federalregister.gov/api/v1/agencies/345",
+            "name": "National Highway Traffic Safety Administration",
+            "parent_id": 492,
+            "raw_name": "National Highway Traffic Safety Administration",
+            "slug": "national-highway-traffic-safety-administration",
+            "url": "https://www.federalregister.gov/agencies/national-highway-traffic-safety-administration"
+          }
+        ],
+        "document_number": "2026-19964",
+        "html_url": "https://www.federalregister.gov/documents/2026/09/30/2026-19964/the-safer-affordable-fuel-efficient-safe-vehicles-rule-iii-for-model-years-2022-to-2031-passenger",
+        "publication_date": "2026-09-30",
+        "title": "The Safer Affordable Fuel-Efficient (SAFE) Vehicles Rule III for Model Years 2022 to 2031 Passenger Cars and Light Trucks",
+        "type": "Rule"
+      },
+      {
+        "abstract": "In this final rule, the U.S. Environmental Protection Agency (EPA) is repealing most provisions of the 2024 Carbon Pollution Standards for greenhouse gas (GHG) emissions from fossil fuel-fired electric generating units (EGUs) based on a reevaluation of the best system of emission reduction for the relevant subcategories. Specifically, the EPA is repealing the emission guidelines for existing fossil fuel-fired steam generating units, the carbon capture and sequestration/storage (CCS)-based standards for coal-fired steam generating units undertaking a large modification, and the CCS-based standards for new base load stationary combustion turbines (i.e., Phase 2 standards). In a separate action published concurrently with this final rule, the EPA is issuing a supplemental proposal soliciting comment on additional reasons to rescind all GHG emission requirements for fossil fuel-fired EGUs to effectuate the best reading of Clean Air Act (CAA) section 111 and ensure consistency with applicable principles of administrative law beyond those reasons on which the EPA solicited comment in the June 2025 notice of proposed rulemaking.",
+        "agencies": [
+          {
+            "id": 145,
+            "json_url": "https://www.federalregister.gov/api/v1/agencies/145",
+            "name": "Environmental Protection Agency",
+            "parent_id": null,
+            "raw_name": "ENVIRONMENTAL PROTECTION AGENCY",
+            "slug": "environmental-protection-agency",
+            "url": "https://www.federalregister.gov/agencies/environmental-protection-agency"
+          }
+        ],
+        "document_number": "2026-19071",
+        "html_url": "https://www.federalregister.gov/documents/2026/09/17/2026-19071/partial-repeal-of-the-carbon-pollution-standards-for-fossil-fuel-fired-electric-generating-units",
+        "publication_date": "2026-09-17",
+        "title": "Partial Repeal of the Carbon Pollution Standards for Fossil Fuel-Fired Electric Generating Units",
+        "type": "Rule"
+      }
+    ],
+    "total_pages": 1
+  },
+  "recorded_on": "2026-10-07",
+  "request": {
+    "params": [
+      [
+        "per_page",
+        "3"
+      ],
+      [
+        "order",
+        "newest"
+      ],
+      [
+        "conditions[term]",
+        "\"artificial intelligence\""
+      ],
+      [
+        "conditions[type][]",
+        "RULE"
+      ],
+      [
+        "conditions[publication_date][gte]",
+        "2026-09-07"
+      ],
+      [
+        "conditions[publication_date][lte]",
+        "2026-10-07"
+      ],
+      [
+        "fields[]",
+        "document_number"
+      ],
+      [
+        "fields[]",
+        "title"
+      ],
+      [
+        "fields[]",
+        "type"
+      ],
+      [
+        "fields[]",
+        "publication_date"
+      ],
+      [
+        "fields[]",
+        "html_url"
+      ],
+      [
+        "fields[]",
+        "agencies"
+      ],
+      [
+        "fields[]",
+        "abstract"
+      ]
+    ],
+    "url": "https://www.federalregister.gov/api/v1/documents.json"
+  },
+  "source": "federalregister.gov/api/v1",
+  "status": 200
+}

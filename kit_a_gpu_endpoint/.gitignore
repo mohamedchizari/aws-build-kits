@@ -1,0 +1,12 @@
+# Written at run time in your own account. .state.json holds your account id, your resource ARNs and
+# the Region and prefix of the deploy; results/ holds your numbers. Do not commit or share them.
+.state.json
+.state.json.tmp
+# Any copy you make by hand (.state.json.bak, .state.json.old) holds the same account id and ARNs.
+.state.json*
+config.env
+results/
+# Local tooling.
+.venv/
+__pycache__/
+.pytest_cache/

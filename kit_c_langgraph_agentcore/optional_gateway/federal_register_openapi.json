@@ -1,0 +1,50 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Federal Register agencies (one operation, for the kit C gateway step)",
+    "version": "1.0.0",
+    "description": "A deliberately small description of one endpoint of the public Federal Register API. It uses only what AgentCore Gateway documents as supported for OpenAPI targets: OpenAPI 3.0, an operationId, one server URL, a GET with one simple path parameter and a JSON response."
+  },
+  "servers": [
+    { "url": "https://www.federalregister.gov/api/v1" }
+  ],
+  "paths": {
+    "/agencies/{slug}": {
+      "get": {
+        "operationId": "getAgency",
+        "summary": "Look up one Federal Register agency by its slug.",
+        "description": "Returns the agency's name, short name, description, parent agency id and child agency slugs. Use it to confirm an agency slug before searching documents by agency.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "The agency slug in lower case with hyphens, for example commerce-department.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The agency.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer" },
+                    "name": { "type": "string" },
+                    "short_name": { "type": "string" },
+                    "slug": { "type": "string" },
+                    "description": { "type": "string" },
+                    "parent_id": { "type": "integer" },
+                    "url": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

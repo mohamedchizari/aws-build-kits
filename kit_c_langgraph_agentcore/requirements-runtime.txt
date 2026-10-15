@@ -1,0 +1,21 @@
+# What 20_package.py installs into the arm64 zip that runs on AgentCore Runtime.
+# Keep it small: the zip limit is 250 MB zipped and 750 MB unzipped.
+#
+# Checked 2026-10-07: uv resolved this exact set for
+# --python-platform aarch64-manylinux2014 --python-version 3.13 --only-binary=:all:
+# (every native library in the result is an aarch64 build).
+#
+# This is the short list. The full set it resolves to, indirect dependencies
+# included, is pinned in requirements-runtime.lock.txt (119 packages) and, without
+# the two "otel" lines, in requirements-runtime-no-otel.lock.txt (50 packages).
+# 20_package.py installs from those. After changing a line here, run
+# `python 20_package.py --relock`; a test fails if the files disagree.
+langgraph==1.2.14
+langchain-aws==1.8.1
+langchain-core==1.6.7
+bedrock-agentcore==1.24.1
+boto3==1.43.108
+requests==2.34.2
+# The two lines marked "otel" are left out when ENABLE_OTEL=false.
+aws-opentelemetry-distro==0.21.0  # otel
+opentelemetry-instrumentation-langchain==0.62.4  # otel

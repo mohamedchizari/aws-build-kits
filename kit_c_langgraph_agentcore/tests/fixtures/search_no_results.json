@@ -1,0 +1,66 @@
+{
+  "body": {
+    "count": 0,
+    "description": "Documents matching 'zzqxv-kit-c-no-such-term', published from 09/07/2026 to 10/07/2026, and of type Rule"
+  },
+  "recorded_on": "2026-10-07",
+  "request": {
+    "params": [
+      [
+        "per_page",
+        "3"
+      ],
+      [
+        "order",
+        "newest"
+      ],
+      [
+        "conditions[term]",
+        "zzqxv-kit-c-no-such-term"
+      ],
+      [
+        "conditions[type][]",
+        "RULE"
+      ],
+      [
+        "conditions[publication_date][gte]",
+        "2026-09-07"
+      ],
+      [
+        "conditions[publication_date][lte]",
+        "2026-10-07"
+      ],
+      [
+        "fields[]",
+        "document_number"
+      ],
+      [
+        "fields[]",
+        "title"
+      ],
+      [
+        "fields[]",
+        "type"
+      ],
+      [
+        "fields[]",
+        "publication_date"
+      ],
+      [
+        "fields[]",
+        "html_url"
+      ],
+      [
+        "fields[]",
+        "agencies"
+      ],
+      [
+        "fields[]",
+        "abstract"
+      ]
+    ],
+    "url": "https://www.federalregister.gov/api/v1/documents.json"
+  },
+  "source": "federalregister.gov/api/v1",
+  "status": 200
+}

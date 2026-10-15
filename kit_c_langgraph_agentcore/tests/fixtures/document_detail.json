@@ -1,0 +1,150 @@
+{
+  "body": {
+    "abstract": "NHTSA, on behalf of the U.S. Department of Transportation (DOT), is substantially recalibrating the Corporate Average Fuel Economy (CAFE) program to bring the program into compliance with the law and to remove previous regulatory distortions which have induced manufacturers to make design decisions that have neither aligned with market demand and the needs of American families nor have delivered the consistent improvements in the fuel economy performance of manufacturer fleets, as Congress intended. This recalibration finalizes amendments to fuel economy standards for light-duty vehicles for model years 2022- 2026 and MYs 2027-2031. This final rule also finalizes amendments to compliance aspects of the program, including to vehicle classification and other compliance pathways.",
+    "action": "Final rule.",
+    "agencies": [
+      {
+        "id": 492,
+        "json_url": "https://www.federalregister.gov/api/v1/agencies/492",
+        "name": "Transportation Department",
+        "parent_id": null,
+        "raw_name": "DEPARTMENT OF TRANSPORTATION",
+        "slug": "transportation-department",
+        "url": "https://www.federalregister.gov/agencies/transportation-department"
+      },
+      {
+        "id": 345,
+        "json_url": "https://www.federalregister.gov/api/v1/agencies/345",
+        "name": "National Highway Traffic Safety Administration",
+        "parent_id": 492,
+        "raw_name": "National Highway Traffic Safety Administration",
+        "slug": "national-highway-traffic-safety-administration",
+        "url": "https://www.federalregister.gov/agencies/national-highway-traffic-safety-administration"
+      }
+    ],
+    "cfr_references": [
+      {
+        "chapter": null,
+        "citation_url": null,
+        "part": "523",
+        "title": 49
+      },
+      {
+        "chapter": null,
+        "citation_url": null,
+        "part": "531",
+        "title": 49
+      },
+      {
+        "chapter": null,
+        "citation_url": null,
+        "part": "533",
+        "title": 49
+      },
+      {
+        "chapter": null,
+        "citation_url": null,
+        "part": "536",
+        "title": 49
+      },
+      {
+        "chapter": null,
+        "citation_url": null,
+        "part": "537",
+        "title": 49
+      },
+      {
+        "chapter": null,
+        "citation_url": null,
+        "part": "578",
+        "title": 49
+      }
+    ],
+    "citation": "91 FR 61988",
+    "comments_close_on": null,
+    "dates": "This rule is effective November 30, 2026. The incorporation by reference of certain publications listed in the regulations is approved by the Director of the Federal Register as of November 30, 2026.",
+    "docket_ids": [
+      "NHTSA-2025-0491"
+    ],
+    "document_number": "2026-19964",
+    "effective_on": "2026-11-30",
+    "html_url": "https://www.federalregister.gov/documents/2026/09/30/2026-19964/the-safer-affordable-fuel-efficient-safe-vehicles-rule-iii-for-model-years-2022-to-2031-passenger",
+    "page_length": 304,
+    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-09-30/pdf/2026-19964.pdf",
+    "publication_date": "2026-09-30",
+    "title": "The Safer Affordable Fuel-Efficient (SAFE) Vehicles Rule III for Model Years 2022 to 2031 Passenger Cars and Light Trucks",
+    "type": "Rule"
+  },
+  "recorded_on": "2026-10-07",
+  "request": {
+    "params": [
+      [
+        "fields[]",
+        "document_number"
+      ],
+      [
+        "fields[]",
+        "title"
+      ],
+      [
+        "fields[]",
+        "type"
+      ],
+      [
+        "fields[]",
+        "action"
+      ],
+      [
+        "fields[]",
+        "publication_date"
+      ],
+      [
+        "fields[]",
+        "effective_on"
+      ],
+      [
+        "fields[]",
+        "comments_close_on"
+      ],
+      [
+        "fields[]",
+        "dates"
+      ],
+      [
+        "fields[]",
+        "html_url"
+      ],
+      [
+        "fields[]",
+        "pdf_url"
+      ],
+      [
+        "fields[]",
+        "citation"
+      ],
+      [
+        "fields[]",
+        "agencies"
+      ],
+      [
+        "fields[]",
+        "docket_ids"
+      ],
+      [
+        "fields[]",
+        "cfr_references"
+      ],
+      [
+        "fields[]",
+        "page_length"
+      ],
+      [
+        "fields[]",
+        "abstract"
+      ]
+    ],
+    "url": "https://www.federalregister.gov/api/v1/documents/2026-19964.json"
+  },
+  "source": "federalregister.gov/api/v1",
+  "status": 200
+}

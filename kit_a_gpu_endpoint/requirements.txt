@@ -1,0 +1,14 @@
+# Kit A dependencies, pinned to versions that exist on PyPI.
+# How this was checked on 2026-10-07: each version was read from https://pypi.org/pypi/<name>/json, then this
+# file was installed into a clean Python 3.13 virtual environment and the offline tests were run in it.
+# Python 3.11 or newer.
+
+boto3==1.43.108
+botocore==1.43.108
+
+# Only for "50_invoke.py --mode openai": the bearer-token generator and the OpenAI SDK.
+sagemaker-core==2.23.0
+openai==3.26.0
+
+# Only for the offline tests: python -m pytest -q
+pytest==9.1.1

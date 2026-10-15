@@ -1,0 +1,75 @@
+{
+  "body": null,
+  "recorded_on": "2026-10-07",
+  "request": {
+    "params": [
+      [
+        "fields[]",
+        "document_number"
+      ],
+      [
+        "fields[]",
+        "title"
+      ],
+      [
+        "fields[]",
+        "type"
+      ],
+      [
+        "fields[]",
+        "action"
+      ],
+      [
+        "fields[]",
+        "publication_date"
+      ],
+      [
+        "fields[]",
+        "effective_on"
+      ],
+      [
+        "fields[]",
+        "comments_close_on"
+      ],
+      [
+        "fields[]",
+        "dates"
+      ],
+      [
+        "fields[]",
+        "html_url"
+      ],
+      [
+        "fields[]",
+        "pdf_url"
+      ],
+      [
+        "fields[]",
+        "citation"
+      ],
+      [
+        "fields[]",
+        "agencies"
+      ],
+      [
+        "fields[]",
+        "docket_ids"
+      ],
+      [
+        "fields[]",
+        "cfr_references"
+      ],
+      [
+        "fields[]",
+        "page_length"
+      ],
+      [
+        "fields[]",
+        "abstract"
+      ]
+    ],
+    "url": "https://www.federalregister.gov/api/v1/documents/0000-00000.json"
+  },
+  "source": "federalregister.gov/api/v1",
+  "status": 404
+}

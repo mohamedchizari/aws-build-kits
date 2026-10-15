@@ -1,0 +1,18 @@
+# Everything needed to run the scripts and the tests on your own machine.
+# Python 3.11 or newer.
+#
+# How these pins were checked (2026-10-07): `pip index versions <name>` reported
+# each version below as the newest on PyPI that day. This file alone was then
+# installed into two clean virtual environments, Python 3.13.16 and Python
+# 3.11.17, and the offline tests in tests/ passed in both (696 passed). The
+# same was done again that day after the third correction, with the same pins
+# (792 passed in both), and after the fourth (830 passed in both).
+boto3==1.43.108
+langgraph==1.2.14
+langchain-aws==1.8.1
+langchain-core==1.6.7
+bedrock-agentcore==1.24.1
+requests==2.34.2
+# tests only
+pytest==9.1.1
+httpx==0.28.1

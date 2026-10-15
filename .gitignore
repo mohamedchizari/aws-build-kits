@@ -1,0 +1,10 @@
+# Written at run time in your own account: account id, resource ARNs, your numbers. Never commit them.
+.state.json*
+config.env
+results/
+build/
+# Local tooling.
+.venv/
+__pycache__/
+.pytest_cache/
+.DS_Store

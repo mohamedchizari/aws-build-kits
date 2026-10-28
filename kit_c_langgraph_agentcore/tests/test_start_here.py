@@ -54,7 +54,7 @@ MUST_HAVE = [
     'python 30_deploy.py --dry-run',
     'python 30_deploy.py --i-understand-this-bills',
     'python 40_enable_observability.py --dry-run',
-    'python 40_enable_observability.py --i-understand-this-bills --include-app-logs',
+    'python 40_enable_observability.py --i-understand-this-bills',
     'python 50_invoke_hosted.py --dry-run',
     'python 50_invoke_hosted.py --i-understand-this-bills',
     'python 60_read_usage.py --show-logs',

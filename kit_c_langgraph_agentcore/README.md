@@ -33,7 +33,7 @@ What is in the folder:
 | `12_serve_local.py` | the hosted entrypoint served on localhost:8080 (the documented local test) |
 | `20_package.py` | builds the arm64 zip from a lock file and makes it portable. No AWS call |
 | `30_deploy.py` | S3 bucket and zip, IAM role, AgentCore runtime |
-| `40_enable_observability.py` | usage logs, application logs and traces to CloudWatch |
+| `40_enable_observability.py` | usage logs and traces to CloudWatch; application logs only with `--include-app-logs` |
 | `50_invoke_hosted.py` | several sessions, whole-call time per call, every warned or replaced answer flagged, every session stopped afterwards |
 | `60_read_usage.py` | vCPU-hours and GB-hours per session, cross-checked against CloudWatch metrics no earlier than 60 minutes after the last session, and the cost |
 | `90_teardown.py` | deletes what the kit created in the Region and under the prefix in use, found by name prefix and not only from the state file. Exit code 0 only when nothing of the kit was seen left over |
@@ -251,11 +251,10 @@ prints the price it expects first.
        python 30_deploy.py --dry-run
        python 30_deploy.py --i-understand-this-bills
 
-8. Send usage logs and (if Transaction Search is on) traces to CloudWatch. Application logs, which contain prompts and answers, are an explicit opt-in. Safe to run again if it stops half way.
+8. Send usage logs and (if Transaction Search is on) traces to CloudWatch. Application logs, which contain prompts and answers, are sent only if you add `--include-app-logs` to the second command. Safe to run again if it stops half way.
 
        python 40_enable_observability.py --dry-run
        python 40_enable_observability.py --i-understand-this-bills
-       python 40_enable_observability.py --i-understand-this-bills --include-app-logs
 
 9. Call the hosted agent: five sessions, the same question twice in each,
    every session stopped afterwards. A call whose answer was warned or
@@ -506,8 +505,9 @@ You cannot say, on the strength of this kit:
 
 ## 8. What was and was not tested
 
-Everything here was done on 2026-10-07 in Linux workspaces with no AWS account
-and no credentials of the owner's. Not done, first:
+Everything here was done in Linux workspaces with no AWS account
+and no credentials of the owner's: the kit on 2026-10-07, the scoped-permission
+and log opt-in changes on 2026-10-23 (tests rerun on 2026-10-28). Not done, first:
 
 - Nothing has run against AWS, and the kit's default model has never been
   called. Stand-in models wrote answers in their own harness (section 2).
@@ -521,10 +521,11 @@ and no credentials of the owner's. Not done, first:
 
 **SAFE: what ran here**
 
-- `python -m pytest -q`: 1033 passed, 0 failed on 2026-10-23 after the scoped-permission and log opt-in changes; the previous recorded run had 1031 passes. The network is blocked in tests.
+- `python -m pytest -q`: 1031 passed, 0 failed, with the network blocked
   and AWS variables removed, on Python 3.13.16 and again on Python 3.14.6,
-  each in a clean environment built from `requirements.txt` alone. 22
-  test files. On the Mac (Python 3.14.7), before round 5: 993 passed; a
+  each in a clean environment built from `requirements.txt` alone. After the
+  scoped-permission and log opt-in changes: 1033 passed, 0 failed (Linux,
+  Python 3.13.18, 2026-10-28). 22 test files. On the Mac (Python 3.14.7), before round 5: 993 passed; a
   first run there showed 2 tests that assumed `uv` was installed (changed).
 - The graph ran end to end with scripted fake models, through the hosted
   entrypoint, the hosted caller and the local script, with the answer check,

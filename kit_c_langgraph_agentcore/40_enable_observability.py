@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""40_enable_observability.py: send the runtime's usage logs, application logs and
-(optionally) traces to CloudWatch, so a real session cost can be read back.
+"""40_enable_observability.py: send the runtime's usage logs and (optionally) traces
+to CloudWatch, so a real session cost can be read back. Application logs, which
+hold the prompts and the answers, are sent only with --include-app-logs.
 
 AgentCore Runtime publishes three log types for a runtime, which you switch on
 with CloudWatch Logs "deliveries":
@@ -10,8 +11,9 @@ with CloudWatch Logs "deliveries":
   https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability-runtime-metrics.html  (read 2026-10-07)
   https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability-configure.html       (read 2026-10-07)
 
-Creates: two log groups, up to three delivery sources, up to three delivery
-destinations and up to three deliveries, all named <prefix>-kitc-*.
+Creates: one log group (two with --include-app-logs), up to three delivery
+sources, up to three delivery destinations and up to three deliveries, all
+named <prefix>-kitc-*.
 
 TRACES is set up only when CloudWatch Transaction Search is already on in the
 account. This script never turns Transaction Search on: that is an account-wide
@@ -118,7 +120,8 @@ def main(argv: list[str] | None = None, aws: kitlib.Aws | None = None, out=print
     state = state or kitlib.State(dry_run=args.dry_run, out=out)
 
     if not kitlib.confirm_billing(args, kitlib.PRICE_LINES_LOGS + [
-        "Expect a few kilobytes of usage records per session and one application record per call.",
+        "Expect a few kilobytes of usage records per session, and with --include-app-logs "
+        "one application record per call.",
     ], out):
         return 2
 

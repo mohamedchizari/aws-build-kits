@@ -339,9 +339,33 @@ def test_execution_policy_matches_the_documented_statements(kit):
         "xray:GetSamplingTargets", "cloudwatch:PutMetricData",
         "bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream",
     }
+    invoke = next(st for st in policy["Statement"] if st.get("Sid") == "BedrockModelInvocation")
+    assert invoke["Resource"] == [
+       f"arn:aws:bedrock:us-east-1:{ACCOUNT}:inference-profile/us.amazon.nova-micro-v1:0",
+       "arn:aws:bedrock:*::foundation-model/amazon.nova-micro-v1:0",
+    ]
+    assert all("foundation-model/*" not in resource and f"{ACCOUNT}:*" not in resource
+              for resource in invoke["Resource"])
+    log_group = (f"arn:aws:logs:us-east-1:{ACCOUNT}:log-group:"
+                 "/aws/bedrock-agentcore/runtimes/kitdemo_kitc_fr_agent-*")
+    create_logs = next(st for st in policy["Statement"] if "logs:CreateLogGroup" in st["Action"])
+    assert create_logs["Resource"] == [log_group]
     trust = script.trust_policy(ACCOUNT, "us-east-1")["Statement"][0]
     assert trust["Principal"] == {"Service": "bedrock-agentcore.amazonaws.com"}
     assert trust["Condition"]["StringEquals"] == {"aws:SourceAccount": ACCOUNT}
+
+
+def test_execution_policy_scopes_inference_profile_to_profile_and_model(kit):
+    script = _deploy_script(kit)
+    model_id = "us.amazon.nova-micro-v1:0"
+    policy = script.execution_policy(ACCOUNT, "us-east-1", "kitdemo_kitc_fr_agent",
+                                    model_id=model_id)
+    invoke = next(st for st in policy["Statement"] if st.get("Sid") == "BedrockModelInvocation")
+    assert invoke["Resource"] == [
+       f"arn:aws:bedrock:us-east-1:{ACCOUNT}:inference-profile/{model_id}",
+       "arn:aws:bedrock:*::foundation-model/amazon.nova-micro-v1:0",
+    ]
+    assert "arn:aws:bedrock:*::foundation-model/*" not in invoke["Resource"]
 
 
 def test_execution_policy_can_add_read_access_to_exactly_the_zip(kit):
@@ -358,6 +382,8 @@ def test_execution_policy_can_add_read_access_to_exactly_the_zip(kit):
 
 def test_deploy_passes_the_s3_statement_only_when_the_setting_is_on(kit, monkeypatch):
     script = _deploy_script(kit)
+    model_id = "anthropic.claude-sonnet-4-5-20250929-v1:0"
+    monkeypatch.setenv("MODEL_ID", model_id)
     for setting, expected in (("", False), ("true", True)):
         monkeypatch.setenv("EXECUTION_ROLE_S3_READ", setting)
         lines: list[str] = []
@@ -365,6 +391,10 @@ def test_deploy_passes_the_s3_statement_only_when_the_setting_is_on(kit, monkeyp
         assert script.main(["--dry-run"], aws=aws, out=lines.append, state=kit.State(dry_run=True)) == 0
         policy = next(p for s, o, p in aws.planned if o == "put_role_policy")["PolicyDocument"]
         assert ("s3:GetObject" in policy) is expected
+        invocation = next(st for st in json.loads(policy)["Statement"]
+                          if st.get("Sid") == "BedrockModelInvocation")
+        assert invocation["Resource"] == [
+            f"arn:aws:bedrock:us-east-1::foundation-model/{model_id}"]
 
 
 def test_deploy_prints_what_an_unstopped_session_can_cost(kit, stubs, built_package):
@@ -416,7 +446,8 @@ def test_observability_creates_deliveries(kit, stubs, destination, expected_kind
     if "traces" in expected_kinds:
         _delivery_stubs(stubs, "traces", "TRACES", "XRAY")
     lines: list[str] = []
-    rc = script.main(["--i-understand-this-bills"], aws=make_aws(kit, stubs, lines),
+    rc = script.main(["--i-understand-this-bills", "--include-app-logs"],
+                     aws=make_aws(kit, stubs, lines),
                      out=lines.append, state=state)
     assert rc == 0, "\n".join(lines)
     stubs.assert_all_used()
@@ -432,6 +463,19 @@ def test_observability_needs_a_deployed_runtime(kit, stubs):
     rc = script.main(["--i-understand-this-bills"], aws=make_aws(kit, stubs, lines),
                      out=lines.append, state=kit.State(kit.STATE_PATH))
     assert rc == 1 and set(stubs.clients) == {"sts"}
+
+
+def test_observability_skips_payload_logs_by_default(kit):
+    script = load_script("40_enable_observability.py")
+    lines: list[str] = []
+    aws = kit.Aws("us-east-1", dry_run=True, out=lines.append)
+    rc = script.main(["--dry-run"], aws=aws, out=lines.append, state=kit.State(dry_run=True))
+    assert rc == 0, "\n".join(lines)
+    assert any(operation == "put_delivery_source" and parameters.get("logType") == "USAGE_LOGS"
+               for service, operation, parameters in aws.planned if service == "logs")
+    assert not any(parameters.get("logType") == "APPLICATION_LOGS"
+                   for service, operation, parameters in aws.planned if service == "logs")
+    assert any("--include-app-logs" in line for line in lines)
 
 
 def test_observability_rerun_after_a_partial_failure_creates_only_what_is_missing(kit, stubs):
@@ -450,7 +494,8 @@ def test_observability_rerun_after_a_partial_failure_creates_only_what_is_missin
     _delivery_stubs(stubs, "usage", "USAGE_LOGS", "CWL")
     stubs.add_error("logs", "create_log_group", "ThrottlingException", 400)
     lines: list[str] = []
-    assert script.main(["--i-understand-this-bills"], aws=make_aws(kit, stubs, lines),
+    assert script.main(["--i-understand-this-bills", "--include-app-logs"],
+                       aws=make_aws(kit, stubs, lines),
                        out=lines.append, state=state) == 1
     assert [d["kind"] for d in json.loads(kit.STATE_PATH.read_text())["deliveries"]] == ["usage"]
     assert any("run this script again" in line for line in lines)
@@ -463,7 +508,8 @@ def test_observability_rerun_after_a_partial_failure_creates_only_what_is_missin
     stubs.add("xray", "get_trace_segment_destination", {"Destination": "CloudWatchLogs", "Status": "ACTIVE"}, {})
     _delivery_stubs(stubs, "traces", "TRACES", "XRAY")
     lines = []
-    assert script.main(["--i-understand-this-bills"], aws=make_aws(kit, stubs, lines),
+    assert script.main(["--i-understand-this-bills", "--include-app-logs"],
+                       aws=make_aws(kit, stubs, lines),
                        out=lines.append, state=kit.State(kit.STATE_PATH)) == 0, "\n".join(lines)
     stubs.assert_all_used()
     saved = json.loads(kit.STATE_PATH.read_text())
@@ -475,7 +521,8 @@ def test_observability_rerun_after_a_partial_failure_creates_only_what_is_missin
     # third run: everything is there, nothing is created
     identity(stubs)
     lines = []
-    assert script.main(["--i-understand-this-bills"], aws=make_aws(kit, stubs, lines),
+    assert script.main(["--i-understand-this-bills", "--include-app-logs"],
+                       aws=make_aws(kit, stubs, lines),
                        out=lines.append, state=kit.State(kit.STATE_PATH)) == 0
     stubs.assert_all_used()
     assert any("0 delivery(ies) created now, 3 recorded in all" in line for line in lines)

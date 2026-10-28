@@ -88,12 +88,15 @@ def test_the_test_counts_agree_between_the_readme_and_the_notes():
     assert later, "section 8 should say how many tests came with START_HERE.md"
     in_file = len(re.findall(r"^def test_", (KIT_DIR / "tests" / "test_start_here.py").read_text(encoding="utf-8"), flags=re.M))
     assert int(later.group(1)) == in_file
+    preflight = len(re.findall(
+        r"^def test_", (KIT_DIR / "tests" / "test_preflight_profile_status.py").read_text(encoding="utf-8"),
+        flags=re.M))
     # Round 5 added tests/test_review_r5.py and the fifth reader's two scenario files; section 8 counts them, and
     # tests/test_review_r5.py checks that count against what pytest collects.
     round_5 = re.search(r"([\d,]+) of them are in `tests/test_review_r5\.py` and the fifth reader's two scenario files",
                         section(8))
     assert round_5, "section 8 should say how many tests round 5 added"
-    assert (int(in_notes.group(3).replace(",", "")) + in_file + int(round_5.group(1).replace(",", ""))
+    assert (int(in_notes.group(3).replace(",", "")) + in_file + int(round_5.group(1).replace(",", "")) + preflight
             == int(total.replace(",", "")))
     assert f"| `tests/` | {total} offline tests" in section(1)
     assert "fixed four times" in section(8)

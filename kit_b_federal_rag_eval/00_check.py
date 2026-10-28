@@ -34,7 +34,11 @@ def check_model(aws: api.Aws, label: str, model_id: str) -> tuple[bool, list[str
     try:
         if is_profile:
             profile = api.get_inference_profile(aws, model_id)
-            lines.append(f"  inference profile status: {profile.get('status')}")
+            profile_status = profile.get("status")
+            lines.append(f"  inference profile status: {profile_status}")
+            if not aws.dry_run and profile_status != "ACTIVE":
+                ok = False
+                lines.append("  PROBLEM: inference profile is not ACTIVE")
             lines.append("  (a profile id cannot be checked with the availability call; use --invoke-test)")
         else:
             details = api.get_foundation_model(aws, model_id)

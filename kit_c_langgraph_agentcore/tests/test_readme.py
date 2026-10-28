@@ -85,7 +85,7 @@ def test_section_7_says_what_the_owner_did_not_what_the_kit_did():
         assert overstated not in said
     for honest in (
         "deployed and operated an agent that the kit supplied",
-        "created the execution role from AWS's documented policy",
+        "created an execution role based on AWS's documented policy",
         "timed first and later calls end to end",
         "found nothing under your prefix in the Regions",
     ):
@@ -786,7 +786,7 @@ def test_every_pointer_from_the_code_into_section_2_still_lands():
     assert "900 / 3600 x (2 x $0.0895 + 8 x $0.00945)" in two   # "README section 2 shows the arithmetic"
     assert "`EXECUTION_ROLE_S3_READ=true` (item 11)" in two       # "needs S3 read access ... (README section 2)"
     eight = flat(section(8))
-    assert "| 11 | Whether the execution role needs S3 access to the deployment package. Two AWS pages disagree" in eight
+    assert "| 11 | Whether the execution role needs S3 access to the deployment package (two AWS pages disagree)" in eight
     assert "`ENABLE_OTEL=false` (item 1)" in two and "| 1 | That the hosted runtime starts `opentelemetry-instrument`" in eight
     assert "`MODEL_ID` (item 12)" in two and "| 12 | Whether Amazon Nova accepts the search tool's optional arguments" in eight
     # section 1 and section 3 no longer send the reader to a line that left section 2

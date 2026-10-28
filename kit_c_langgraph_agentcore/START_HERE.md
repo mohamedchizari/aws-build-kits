@@ -35,7 +35,7 @@ cp config.example.env config.env      # then edit if you need to
 6. Never delete, edit, move or rename `.state.json` while anything may be deployed: it may be the only record of where a runtime is billing.
 
 ## The commands, in order
-Every script takes `--dry-run`, which prints the AWS calls and makes none. The first three commands need no AWS. The fifth is the first that bills. Under the commands: the last line of each.
+Every script takes `--dry-run`, which prints the AWS calls and makes none. The first three commands need no AWS. The fifth is the first that bills. Application logs are skipped unless `--include-app-logs` is passed; they contain prompts and answers. Under the commands: the last line of each.
 ```
 python -m pytest -q
 python 10_run_local.py "final rules about energy storage" --fake-model
@@ -46,7 +46,7 @@ python 20_package.py
 python 30_deploy.py --dry-run
 python 30_deploy.py --i-understand-this-bills
 python 40_enable_observability.py --dry-run
-python 40_enable_observability.py --i-understand-this-bills
+python 40_enable_observability.py --i-understand-this-bills --include-app-logs
 python 50_invoke_hosted.py --dry-run
 python 50_invoke_hosted.py --i-understand-this-bills
 python 60_read_usage.py --show-logs

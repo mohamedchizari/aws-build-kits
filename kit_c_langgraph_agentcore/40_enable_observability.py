@@ -24,7 +24,7 @@ run that failed half way can simply be repeated.
 Usage:
     python 40_enable_observability.py --dry-run
     python 40_enable_observability.py --i-understand-this-bills
-    python 40_enable_observability.py --i-understand-this-bills --no-app-logs
+    python 40_enable_observability.py --i-understand-this-bills --include-app-logs
 """
 from __future__ import annotations
 
@@ -105,8 +105,11 @@ def _ensure_log_group(aws: kitlib.Aws, name: str, out) -> None:
 def main(argv: list[str] | None = None, aws: kitlib.Aws | None = None, out=print,
          state: kitlib.State | None = None) -> int:
     parser = kitlib.make_parser(__doc__, bills=True)
-    parser.add_argument("--no-app-logs", action="store_true",
-                        help="skip APPLICATION_LOGS (they contain the prompts and the answers)")
+    app_logs = parser.add_mutually_exclusive_group()
+    app_logs.add_argument("--include-app-logs", action="store_true",
+                          help="opt in to APPLICATION_LOGS, which contain prompts and answers")
+    app_logs.add_argument("--no-app-logs", action="store_true",
+                          help="legacy option; application logs are skipped by default")
     parser.add_argument("--no-traces", action="store_true", help="skip the TRACES delivery")
     args = parser.parse_args(argv)
     out = kitlib.redacting(out)  # review round 5, F13: no line carries a full account id
@@ -169,15 +172,20 @@ def main(argv: list[str] | None = None, aws: kitlib.Aws | None = None, out=print
             usage_arn = f"arn:aws:logs:{cfg.region}:{account}:log-group:{cfg.usage_log_group}"
             record(_delivery(aws, cfg, "usage", "USAGE_LOGS", runtime_arn, "CWL", usage_arn, out))
 
-        if args.no_app_logs:
-            pass
+        if args.include_app_logs:
+            if "app" in have:
+                out("[logs] APPLICATION_LOGS delivery is already recorded, skipping")
+            else:
+                about_to_create("app", cfg.app_log_group)
+                _ensure_log_group(aws, cfg.app_log_group, out)
+                app_arn = f"arn:aws:logs:{cfg.region}:{account}:log-group:{cfg.app_log_group}"
+                record(_delivery(aws, cfg, "app", "APPLICATION_LOGS", runtime_arn, "CWL", app_arn, out))
         elif "app" in have:
-            out("[logs] APPLICATION_LOGS delivery is already recorded, skipping")
+            out("[logs] APPLICATION_LOGS are already enabled by a recorded delivery; "
+                "they contain prompts and answers. Run 90_teardown.py to remove the delivery.")
         else:
-            about_to_create("app", cfg.app_log_group)
-            _ensure_log_group(aws, cfg.app_log_group, out)
-            app_arn = f"arn:aws:logs:{cfg.region}:{account}:log-group:{cfg.app_log_group}"
-            record(_delivery(aws, cfg, "app", "APPLICATION_LOGS", runtime_arn, "CWL", app_arn, out))
+            out("[logs] APPLICATION_LOGS skipped by default because they contain prompts and answers; "
+                "pass --include-app-logs to opt in")
 
         if args.no_traces:
             pass

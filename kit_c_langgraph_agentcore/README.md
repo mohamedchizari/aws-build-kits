@@ -41,7 +41,7 @@ What is in the folder:
 | `kitlib.py`, `kit_resources.py` | shared plumbing: config, the state file, dry-run, prices, discovery and deletion |
 | `requirements-runtime.lock.txt`, `requirements-runtime-no-otel.lock.txt` | every package in the hosted zip, pinned (Python 3.13) |
 | `optional_gateway/` | extra: one Federal Register endpoint as an MCP tool behind AgentCore Gateway |
-| `tests/` | 1031 offline tests and four recorded Federal Register responses |
+| `tests/` | 1033 offline tests and four recorded Federal Register responses |
 | `START_HERE.md` | the one-page order of work: every command, and the last line to expect from each |
 | `RECORD_OF_REVIEWS.md`, `REVIEW_NOTES_r4.md`, `REVIEW_NOTES_r5.md` | the history: the four review rounds, what this README said before it was shortened, and rounds 4 and 5 finding by finding |
 
@@ -150,7 +150,7 @@ is something left running. No quota request is needed (source 12).
 | A session, while it exists; memory also while idle | Platform version V1, the default: $0.0895 per vCPU-hour and $0.00945 per GB-hour. V2, if enabled for your account and Region: $0.1276 and $0.0169. The kit sets 120 seconds idle and 900 of life, and stops every session it opens |
 | A session that is never stopped | At most 900 / 3600 x (2 x $0.0895 + 8 x $0.00945) = $0.064 on V1 ($0.098 on V2). At the service defaults of 900 and 28,800 seconds the same sum over 8 hours is $2.04 ($3.12) |
 | Model tokens, a separate Bedrock charge, local runs included | In us-east-1, us-east-2 and us-west-2: Nova Micro $0.035 per 1M input tokens and $0.14 per 1M output tokens; Nova 2 Lite $0.33 and $2.75 (`global.` profile: $0.30 per 1M input tokens and $2.50 per 1M output tokens; none held for Nova Micro). What a question costs was not measured |
-| CloudWatch logs, spans and metrics | CloudWatch's own rates, not quoted here. Application logs store your questions and the answers (`--no-app-logs` in step 8 skips them). Transaction Search is account-wide and stays on after teardown |
+| CloudWatch logs, spans and metrics | CloudWatch's own rates, not quoted here. Application logs store your questions and the answers; they are skipped unless you pass `--include-app-logs`. An existing application-log delivery remains enabled until teardown. Transaction Search is account-wide and stays on after teardown |
 
 **State.** Never delete, edit, move or rename `.state.json` while anything may
 be deployed: it may be the only record of where a runtime is billing, and
@@ -251,11 +251,11 @@ prints the price it expects first.
        python 30_deploy.py --dry-run
        python 30_deploy.py --i-understand-this-bills
 
-8. Send usage logs, application logs and (if Transaction Search is on) traces
-   to CloudWatch. Safe to run again if it stops half way.
+8. Send usage logs and (if Transaction Search is on) traces to CloudWatch. Application logs, which contain prompts and answers, are an explicit opt-in. Safe to run again if it stops half way.
 
        python 40_enable_observability.py --dry-run
        python 40_enable_observability.py --i-understand-this-bills
+       python 40_enable_observability.py --i-understand-this-bills --include-app-logs
 
 9. Call the hosted agent: five sessions, the same question twice in each,
    every session stopped afterwards. A call whose answer was warned or
@@ -419,8 +419,7 @@ After a complete run with your own numbers recorded, you can say:
   through the Converse API, and then hosted on AgentCore Runtime using direct
   code deployment with boto3. If you changed the graph or the tools, say what
   you changed.
-- You ran a script that created the execution role from AWS's documented
-  policy, you read that policy, and you can say what it allows.
+- You ran a script that created an execution role based on AWS's documented policy.
 - You served the hosted entrypoint on your own machine and saw the contract it
   serves (`POST /invocations` and `GET /ping` on port 8080; the self-test of
   step 3 makes both calls for you), you built and uploaded an arm64 zip, and
@@ -522,7 +521,7 @@ and no credentials of the owner's. Not done, first:
 
 **SAFE: what ran here**
 
-- `python -m pytest -q`: 1031 passed, 0 failed, with the network blocked
+- `python -m pytest -q`: 1033 passed, 0 failed on 2026-10-23 after the scoped-permission and log opt-in changes; the previous recorded run had 1031 passes. The network is blocked in tests.
   and AWS variables removed, on Python 3.13.16 and again on Python 3.14.6,
   each in a clean environment built from `requirements.txt` alone. 22
   test files. On the Mac (Python 3.14.7), before round 5: 993 passed; a
@@ -568,7 +567,7 @@ marked `# UNVERIFIED:` in the code, and the record has each in full.
 | 8 | Optional gateway: that a service role with no permissions policy is enough for a public OpenAPI target; the SigV4 signing name `bedrock-agentcore`; that a new gateway accepts `MCP-Protocol-Version: 2025-11-25` without an `initialize` call; the tool name `federal-register___getAgency` | Nothing: the gateway step is optional |
 | 9 | What a deployed runtime with no session really bills. The pricing page says its code bills at S3 Standard rates ($0.0023 a month for 100 MB); whether that adds to the copy in your bucket, and how "system overhead" shows in a session's usage, has not been seen on a bill | Tear down when you have your usage figure, and read the bill |
 | 10 | CloudWatch's and S3's own rate tables: not read, not quoted. Token prices are held for Nova Micro and Nova 2 Lite only, in three US Regions | For another model give `60_read_usage.py` the two prices |
-| 11 | Whether the execution role needs S3 access to the deployment package. Two AWS pages disagree; the default follows the one with none | If the runtime cannot read the package: `EXECUTION_ROLE_S3_READ=true` in `config.env`, `90_teardown.py`, deploy again |
+| 11 | Whether the execution role needs S3 access to the deployment package (two AWS pages disagree), and whether the narrowed model resources are sufficient for each runtime/profile | If the runtime cannot read the package: `EXECUTION_ROLE_S3_READ=true` in `config.env`, `90_teardown.py`, deploy again; if invocation is denied, inspect the exact resource ARNs and AWS's current runtime policy requirements |
 | 12 | Whether Amazon Nova accepts the search tool's optional arguments as LangChain sends them, and whether Nova Micro fills them in well | If not: `MODEL_ID=us.amazon.nova-2-lite-v1:0` |
 | 13 | That `GetAgentRuntime` echoes `platformVersion` and the lifecycle settings | Where it does not, every rates line says the version is ASSUMED |
 | 14 | What the spans hold with `TRACELOOP_TRACE_CONTENT` set to `false`. The setting was read in the instrumentor's source; no span was produced here | Look at one trace before you rely on it |

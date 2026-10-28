@@ -45,7 +45,7 @@ python -m pip install -r requirements.txt
 python -m pytest -q
 ```
 
-Last run on 15 October 2026 on macOS (Apple silicon), Python 3.14.7, in one virtualenv built from the four `requirements.txt` files: `common/` 434 passed, `kit_a_gpu_endpoint/` 349 passed, `kit_b_federal_rag_eval/` 1,981 passed, `kit_c_langgraph_agentcore/` 1,031 passed.
+Recorded full-suite run on 15 October 2026 on macOS (Apple silicon), Python 3.14.7, in one virtualenv built from the four `requirements.txt` files: `common/` 434 passed, `kit_a_gpu_endpoint/` 349 passed, `kit_b_federal_rag_eval/` 1,981 passed, `kit_c_langgraph_agentcore/` 1,031 passed. On 23 October 2026, after the script fixes, the offline Kit B and Kit C suites were rerun separately: 1,982 and 1,033 passed respectively; `common/` and Kit A were not rerun.
 
 ## How it was checked
 

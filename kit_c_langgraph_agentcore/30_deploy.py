@@ -49,23 +49,34 @@ def trust_policy(account: str, region: str) -> dict:
 
 
 def execution_policy(account: str, region: str, runtime_name: str,
-                     code_object_arn: str | None = None) -> dict:
-    """The execution role policy AWS documents for direct code deployment.
+                     code_object_arn: str | None = None,
+                     model_id: str = kitlib.DEFAULT_MODEL_ID) -> dict:
+    """Build a runtime policy based on AWS's documented direct-deploy permissions.
 
     doc: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.html (read 2026-10-07)
-    Same statements as the page ("Amazon Bedrock AgentCore direct deploy execution role"),
-    with this account, Region and runtime name filled in. That policy has no S3 statement.
+    Resource scope is narrowed to this runtime's log groups and the configured model.
 
     Two AWS pages disagree here. The direct code deployment page says "The execution role
     must include basic Amazon Bedrock AgentCore runtime permissions, S3 access permissions
     for your deployment package, and CloudWatch Logs permissions for observability":
     https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy-python.html (read 2026-10-07)
-    UNVERIFIED: which page is right. The default follows the permissions page. If
+    UNVERIFIED: which page is right, or whether the narrowed model resources are sufficient
+    for every AgentCore deployment. For an inference profile the policy includes its exact
+    ARN and only that model id across Regions, since a profile can route across Regions.
+    The default S3 behavior follows the permissions page. If
     CreateAgentRuntime fails on reading the artifact, set EXECUTION_ROLE_S3_READ=true in
     config.env and deploy again: code_object_arn is then passed and one statement is added
     that lets the role read exactly the uploaded zip and nothing else.
     """
     logs = f"arn:aws:logs:{region}:{account}:log-group"
+    runtime_log_group = f"{logs}:/aws/bedrock-agentcore/runtimes/{runtime_name}-*"
+    if kitlib.is_inference_profile_id(model_id):
+        model_resources = [
+            f"arn:aws:bedrock:{region}:{account}:inference-profile/{model_id}",
+            f"arn:aws:bedrock:*::foundation-model/{kitlib.base_model_id(model_id)}",
+        ]
+    else:
+        model_resources = [f"arn:aws:bedrock:{region}::foundation-model/{model_id}"]
     extra = []
     if code_object_arn:
         extra.append({"Sid": "ReadTheDeploymentPackage", "Effect": "Allow",
@@ -75,7 +86,7 @@ def execution_policy(account: str, region: str, runtime_name: str,
         "Statement": extra + [
             {"Effect": "Allow",
              "Action": ["logs:DescribeLogStreams", "logs:CreateLogGroup"],
-             "Resource": [f"{logs}:/aws/bedrock-agentcore/runtimes/*"]},
+             "Resource": [runtime_log_group]},
             {"Effect": "Allow",
              "Action": ["logs:PutResourcePolicy"],
              "Resource": [f"{logs}:/aws/bedrock-agentcore/runtimes/{runtime_name}-*"]},
@@ -84,7 +95,7 @@ def execution_policy(account: str, region: str, runtime_name: str,
              "Resource": [f"{logs}:*"]},
             {"Effect": "Allow",
              "Action": ["logs:CreateLogStream", "logs:PutLogEvents"],
-             "Resource": [f"{logs}:/aws/bedrock-agentcore/runtimes/*:log-stream:*"]},
+             "Resource": [f"{runtime_log_group}:log-stream:*"]},
             {"Effect": "Allow",
              "Action": ["xray:PutTraceSegments", "xray:PutTelemetryRecords",
                         "xray:GetSamplingRules", "xray:GetSamplingTargets"],
@@ -96,8 +107,7 @@ def execution_policy(account: str, region: str, runtime_name: str,
             {"Sid": "BedrockModelInvocation",
              "Effect": "Allow",
              "Action": ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
-             "Resource": ["arn:aws:bedrock:*::foundation-model/*",
-                          f"arn:aws:bedrock:{region}:{account}:*"]},
+             "Resource": model_resources},
         ],
     }
 
@@ -153,7 +163,7 @@ def ensure_role(aws: kitlib.Aws, cfg: kitlib.Config, account: str, out,
     # doc: https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutRolePolicy.html (read 2026-10-07)
     aws.call("iam", "put_role_policy", RoleName=cfg.role_name, PolicyName=cfg.role_policy_name,
              PolicyDocument=json.dumps(execution_policy(account, cfg.region, cfg.runtime_name,
-                                                        code_object_arn)))
+                                                        code_object_arn, cfg.model_id)))
     if code_object_arn:
         out("[iam] EXECUTION_ROLE_S3_READ is on: the role may also read the uploaded zip")
     if created and not aws.dry_run:
